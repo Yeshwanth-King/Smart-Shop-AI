@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useSignUp } from "@clerk/clerk-react";
 import { Mail, User } from "lucide-react";
-import type { AuthFormProps } from "../../types";
+import AuthFormProps from "../../types";
 import { useRouter } from "next/navigation";
 
 const SignUpForm: React.FC<AuthFormProps> = ({

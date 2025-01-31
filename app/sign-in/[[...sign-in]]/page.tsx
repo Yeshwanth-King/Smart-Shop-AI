@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useSignIn } from "@clerk/clerk-react";
 import { Mail } from "lucide-react";
-import type { AuthFormProps } from "../../types";
+import AuthFormProps from "../../types";
 import { useRouter } from "next/navigation";
 const SignInForm: React.FC<AuthFormProps> = ({
   redirectUrl = "/sso-callback",
