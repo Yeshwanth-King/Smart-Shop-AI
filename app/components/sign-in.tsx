@@ -1,44 +1,28 @@
+// components/auth/SignInForm.tsx
 "use client";
 
 import React, { useState } from "react";
-import { useSignUp } from "@clerk/clerk-react";
-import { Mail, User } from "lucide-react";
+import { useSignIn } from "@clerk/clerk-react";
+import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// Move props interface outside the component
-interface SignUpFormProps {
-  redirectUrl?: string;
-  afterSignUpUrl?: string;
-}
-
-// Create a separate page component that doesn't accept props
-export default function SignUpPage() {
-  return <SignUpForm />;
-}
-
-// Make the form component a separate component
-const SignUpForm: React.FC<SignUpFormProps> = ({
-  redirectUrl = "/sso-callback",
-  afterSignUpUrl = "/",
-}) => {
-  const { signUp } = useSignUp();
-  const router = useRouter();
+const SignInForm = () => {
+  const { signIn } = useSignIn();
   const [email, setEmail] = useState<string>("");
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const router = useRouter();
 
-  const handleOAuthSignUp = async (strategy: "oauth_google"): Promise<void> => {
-    if (!signUp) return;
+  const handleOAuthSignIn = async (strategy: "oauth_google"): Promise<void> => {
+    if (!signIn) return;
 
     try {
       setIsLoading(true);
       setError("");
-      await signUp.authenticateWithRedirect({
+      await signIn.authenticateWithRedirect({
         strategy,
-        redirectUrl,
-        redirectUrlComplete: afterSignUpUrl,
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/",
       });
     } catch (err) {
       console.error("OAuth error:", err);
@@ -48,20 +32,18 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
     }
   };
 
-  const handleEmailSignUp = async (e: React.FormEvent) => {
+  const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signUp) return;
+    if (!signIn) return;
 
     try {
       setIsLoading(true);
       setError("");
-      await signUp.create({
-        emailAddress: email,
-        firstName,
-        lastName,
+      await signIn.create({
+        identifier: email,
       });
     } catch (err) {
-      console.error("Email sign-up error:", err);
+      console.error("Email sign-in error:", err);
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
@@ -69,31 +51,31 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#09090B] px-8 to-gray-800 flex flex-col justify-center">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="h-16 w-16 bg-indigo-500 rounded-xl mx-auto flex items-center justify-center">
           <span className="text-2xl font-bold text-white">AI</span>
         </div>
 
         <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-          Create your account
+          Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-gray-400">
-          Already have an account?{" "}
+          Don&apos;t have an account?{" "}
           <button
             onClick={(ev) => {
               ev.preventDefault();
-              router.push("/sign-in");
+              router.push("/sign-up");
             }}
             className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
           >
-            Sign in
+            Sign up for free
           </button>
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-gray-800/50 backdrop-blur-xl py-8 px-4 shadow-xl ring-1 ring-gray-700/50 sm:rounded-2xl sm:px-10">
+        <div className="bg-gray-800/50 backdrop-blur-xl py-8 px-4 shadow-xl ring-1 ring-gray-700/50 rounded-lg sm:rounded-2xl sm:px-10">
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               {error}
@@ -102,10 +84,10 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
 
           <div className="space-y-3">
             <button
-              onClick={() => handleOAuthSignUp("oauth_google")}
+              onClick={() => handleOAuthSignIn("oauth_google")}
               disabled={isLoading}
               className="w-full flex items-center justify-center px-4 py-2 border border-gray-700 rounded-xl 
-                       shadow-sm bg-gray-800 hover:bg-gray-700 transition-colors text-white
+                       shadow-sm bg-gray-800 hover:bg-gray-700 transition-colors text-white 
                        disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
@@ -143,65 +125,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
             </div>
           </div>
 
-          <form onSubmit={handleEmailSignUp} className="mt-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  First name
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    disabled={isLoading}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-xl 
-                             bg-gray-800 text-white placeholder-gray-400 
-                             focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                             disabled:opacity-50 disabled:cursor-not-allowed"
-                    placeholder="John"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  Last name
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    disabled={isLoading}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-xl 
-                             bg-gray-800 text-white placeholder-gray-400 
-                             focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                             disabled:opacity-50 disabled:cursor-not-allowed"
-                    placeholder="Doe"
-                  />
-                </div>
-              </div>
-            </div>
-
+          <form onSubmit={handleEmailSignIn} className="mt-6 space-y-6">
             <div>
               <label
                 htmlFor="email"
@@ -230,27 +154,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
               </div>
             </div>
 
-            <div className="mt-2 text-sm text-gray-400">
-              By signing up, you agree to our{" "}
-              <button className="text-indigo-400 hover:text-indigo-300">
-                Terms of Service
-              </button>{" "}
-              and{" "}
-              <button className="text-indigo-400 hover:text-indigo-300">
-                Privacy Policy
-              </button>
-            </div>
-
             <button
               type="submit"
-              disabled={isLoading || !email || !firstName || !lastName}
+              disabled={isLoading || !email}
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl 
                        shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 
                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
                        transition-colors duration-200
                        disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Creating account..." : "Create account"}
+              {isLoading ? "Loading..." : "Continue with Email"}
             </button>
           </form>
         </div>
@@ -258,3 +171,5 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
     </div>
   );
 };
+
+export default SignInForm;
