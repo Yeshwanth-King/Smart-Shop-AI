@@ -203,6 +203,9 @@ export default function GeneratedWebsite() {
                       placeholder="Describe your business..."
                     />
                   </div>
+                  <div className="flex justify-end">
+                    <button>Next</button>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>

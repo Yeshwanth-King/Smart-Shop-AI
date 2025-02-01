@@ -2,7 +2,7 @@
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { waveform } from "ldrs";
+import { ScaleLoader } from "react-spinners";
 
 const WebsitePreview = () => {
   const router = usePathname();
@@ -23,8 +23,6 @@ const WebsitePreview = () => {
     }
   }, [websiteId]);
 
-  waveform.register();
-
   // Default values shown
 
   return (
@@ -36,14 +34,11 @@ const WebsitePreview = () => {
         </div>
       ) : (
         <>
-          <div className="flex flex-col items-center justify-center ">
-            <p>Getting your website from database...</p>
-            <l-waveform
-              size="100"
-              stroke="10"
-              speed="1"
-              color="black"
-            ></l-waveform>
+          <div className="flex flex-col items-center justify-center  ">
+            <p className=" text-xl mb-4">
+              Getting your website from database...
+            </p>
+            <ScaleLoader height={100} radius={10} width={6} className="mt-10" />
           </div>
         </>
       )}
