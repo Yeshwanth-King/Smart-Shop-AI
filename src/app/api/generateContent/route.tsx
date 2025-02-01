@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import { NextResponse } from "next/server";
 import { z } from "zod";
 import model from "@/app/lib/openai";
 import { NextResponse } from "next/server";
@@ -15,6 +13,7 @@ export const shopSchema = z.object({
     heroImage: z.string(),
     navLinks: z.array(z.string()),
     footerLinks: z.array(z.string()),
+    aboutPageImage: z.string(),
   }),
 });
 
@@ -102,7 +101,47 @@ export async function generateWebsiteContent(shopData: ShopData) {
 
 export async function generateSEO(
   shopData: ShopData,
-  content: Record<string, any>
+  content: {
+    businessName: string;
+    headline: string;
+    subheadline?: string;
+    description: string;
+    features?: Array<{
+      title: string;
+      description: string;
+      icon?: string;
+    }>;
+    services?: Array<{
+      title: string;
+      description: string;
+      price: string;
+    }>;
+    testimonials?: Array<{
+      name: string;
+      role: string;
+      text: string;
+    }>;
+    about?: {
+      story: string;
+      mission: string;
+      values: string[];
+    };
+    contact?: {
+      address: string;
+      phone: string;
+      email: string;
+      hours: string;
+    };
+    callToAction?: {
+      primary: string;
+      secondary: string;
+    };
+    seo?: {
+      title: string;
+      description: string;
+      keywords: string;
+    };
+  }
 ) {
   const prompt = `Generate SEO metadata for ${shopData.shopName}, a ${
     shopData.category
@@ -132,9 +171,56 @@ export async function generateSEO(
 }
 
 export async function generateHTML(
-  content: Record<string, any>,
-  config: Record<string, any>
-): Promise<any> {
+  content: {
+    businessName: string;
+    headline: string;
+    subheadline?: string;
+    description: string;
+    features?: Array<{
+      title: string;
+      description: string;
+      icon?: string;
+    }>;
+    services?: Array<{
+      title: string;
+      description: string;
+      price: string;
+    }>;
+    testimonials?: Array<{
+      name: string;
+      role: string;
+      text: string;
+    }>;
+    about?: {
+      story: string;
+      mission: string;
+      values: string[];
+    };
+    contact?: {
+      address: string;
+      phone: string;
+      email: string;
+      hours: string;
+    };
+    callToAction?: {
+      primary: string;
+      secondary: string;
+    };
+    seo?: {
+      title: string;
+      description: string;
+      keywords: string;
+    };
+  },
+  config: {
+    primaryColor: string;
+    secondaryColor: string;
+    heroImage: string;
+    navLinks: string[];
+    footerLinks: string[];
+    aboutPageImage: string;
+  }
+): Promise<string> {
   const {
     primaryColor,
     secondaryColor,
