@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Code, Store, Sparkles } from "lucide-react";
 import { TextGenerateEffect } from "./components/ui/text-generate-effect";
 import { useUser } from "@clerk/nextjs";
+import mainPhoto from "@/public/screenshot.jpg";
 
 export default function Home() {
   const { user } = useUser();
@@ -44,8 +45,8 @@ export default function Home() {
                   <Sparkles className="w-6 h-6 text-blue-500" />
                 </div>
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-KRk4PGPx5RS2pvzZYavQC8eLP7GpLK.png"
-                  alt="AI Shop Builder Preview"
+                  src={mainPhoto}
+                  alt="Main photo"
                   width={600}
                   height={400}
                   className="rounded-md shadow-2xl"
