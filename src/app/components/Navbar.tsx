@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import logo from "../../public/logo/image.png";
@@ -11,6 +11,7 @@ import logo from "../../public/logo/image.png";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useUser();
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -48,9 +49,9 @@ const Navbar = () => {
                   href={item.href}
                   className={`${
                     pathname === item.href
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                  } px-3 py-2 rounded-md text-sm font-medium`}
+                      ? "text-white text-base font-bold"
+                      : "text-gray-300 text-sm  hover:text-white"
+                  } px-3 py-2  font-medium`}
                 >
                   {item.name}
                 </Link>
@@ -59,9 +60,12 @@ const Navbar = () => {
           </div>
 
           {/* Sign In / User Button */}
-          <div className="hidden md:block">
+          <div className="hidden md:block text-white">
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <div className=" flex items-center gap-2">
+                <UserButton afterSignOutUrl="/" />
+                <span className="capitalize">{user?.fullName}</span>
+              </div>
             </SignedIn>
             <SignedOut>
               <Link
@@ -113,8 +117,9 @@ const Navbar = () => {
           </div>
           <div className="pt-4 pb-3 border-t border-gray-700">
             <SignedIn>
-              <div className="flex items-center px-5">
+              <div className="flex items-center px-5 gap-2 text-white">
                 <UserButton afterSignOutUrl="/" />
+                <span className="capitalize">{user?.fullName}</span>
               </div>
             </SignedIn>
             <SignedOut>
