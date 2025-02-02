@@ -1,12 +1,15 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { usePathname } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
 
 const WebsitePreview = () => {
-  const router = usePathname();
-  const websiteId = router.split("/")[2];
+  const router = useRouter();
+  const path = usePathname();
+  const websiteId = path.split("/")[2];
   const [htmlContent, setHtmlContent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -15,10 +18,8 @@ const WebsitePreview = () => {
       const fetchWebsiteContent = async () => {
         const res = await axios.post(`/api/website`, { id: websiteId });
         const data = res.data;
-        console.log(data.htmlContent);
-        setHtmlContent(data.htmlContent); // Assuming the content is returned from the API
+        setHtmlContent(data.htmlContent);
       };
-
       fetchWebsiteContent();
     }
   }, [websiteId]);
@@ -27,6 +28,10 @@ const WebsitePreview = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <Button variant={"default"} onClick={() => router.push("/my-website")}>
+        <ArrowLeft />
+        Back
+      </Button>
       <h1 className="text-2xl font-bold mb-4">Website Preview</h1>
       {htmlContent ? (
         <div className="border p-4 rounded">

@@ -1,3 +1,4 @@
+// app/api/webhook/clerk/route.ts
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
@@ -22,10 +23,10 @@ export async function POST(req: Request) {
   const wh = new Webhook(SIGNING_SECRET)
 
   // Get headers
-  const headerPayload = await headers()
-  const svix_id = headerPayload.get('svix-id')
-  const svix_timestamp = headerPayload.get('svix-timestamp')
-  const svix_signature = headerPayload.get('svix-signature')
+  const headerPayload = headers()
+  const svix_id = (await headerPayload).get('svix-id')
+  const svix_timestamp = (await headerPayload).get('svix-timestamp')
+  const svix_signature = (await headerPayload).get('svix-signature')
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
@@ -75,11 +76,8 @@ export async function POST(req: Request) {
     await createUser(user as User)
   }
 
-  // Do something with payload
-  // For this guide, log payload to console
-//   const { id } = evt.data
-//   console.log(`Received webhook with ID ${id} and event type of ${eventType}`)
-//   console.log('Webhook payload:', body)
+  console.log(`Received webhook with ID ${evt.data.id} and event type of ${eventType}`)
+  console.log('Webhook payload:', body)
 
   return new Response('Webhook received', { status: 200 })
 }

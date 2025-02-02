@@ -9,8 +9,8 @@ interface User {
 }
 export async function createUser(data: User) {
   try {
-    const { data: user, error } = await supabase.from("users").insert([data]);
-
+    const { data: user, error } = await supabase.from("users").insert(data).single();
+    console.log(user)
     if (error) throw error;
     return { user };
   } catch (error) {

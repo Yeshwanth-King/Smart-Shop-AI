@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
         secondary_color: shopData.config.secondaryColor,
         hero_image: shopData.config.heroImage || null,
         about_page_image: shopData.config.aboutPageImage || null,
+        htmlContent,
       })
       .select()
       .single();

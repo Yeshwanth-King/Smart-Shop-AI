@@ -62,22 +62,30 @@ const WebsitesPage = () => {
               </tr>
             </thead>
             <tbody>
-              {websites?.map((website: { id: string; shop_name: any }) => (
-                <tr
-                  key={website.id}
-                  onClick={() => handleRowClick(website.id)}
-                  className="cursor-pointer hover:bg-gray-100 transition duration-300"
-                >
-                  <td className="px-6 py-4 text-sm text-gray-900 border-b">
-                    {website.shop_name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 border-b">
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
-                      View Preview
-                    </button>
+              {websites.length == 0 ? (
+                <tr>
+                  <td colSpan={2} className="text-center py-4">
+                    No websites found
                   </td>
                 </tr>
-              ))}
+              ) : (
+                websites?.map((website: { id: string; shop_name: any }) => (
+                  <tr
+                    key={website.id}
+                    onClick={() => handleRowClick(website.id)}
+                    className="cursor-pointer hover:bg-gray-100 transition duration-300"
+                  >
+                    <td className="px-6 py-4 text-sm text-gray-900 border-b">
+                      {website.shop_name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900 border-b">
+                      <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
+                        View Preview
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
