@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 interface User {
+  id: string;
   clerkUserId: string;
   email: string;
   firstName?: string;
@@ -9,11 +10,18 @@ interface User {
 }
 export async function createUser(data: User) {
   try {
-    const { data: user, error } = await supabase.from("users").insert(data).single();
-    console.log(user)
+    const { data: user, error } = await supabase
+      .from("users")
+      .insert([data]) 
+      .select("*") 
+      .single(); 
+
     if (error) throw error;
+
+    console.log("Inserted User:", user);
     return { user };
   } catch (error) {
+    console.error("Create User Error:", error);
     return { error };
   }
 }
